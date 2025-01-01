@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  pocket-engine:
+    build:
+      context: ./pocket-engine
+      dockerfile: Dockerfile.dev
+
+  pocket-ui:
+    build:
+      context: ./pocket-ui
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"

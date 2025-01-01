@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { cookies } from 'next/headers';
 
-import "./globals.css";
+import { Navbar } from "./navbar";
 
 export const metadata: Metadata = {
-  title: "e-pocket",
-  description: "revolution of digital wallet",
+  title: "aimtrainer | sharpen your aim",
+  description: "...",
 };
 
-export default async function RootLayout({
+export default async function UnauthenticatedLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -17,10 +17,13 @@ export default async function RootLayout({
   const theme = cookieStore.get('theme')?.value || "light";
 
   return (
-    <html lang="en" data-theme={theme}>
-      <body>
-        {children}
-      </body>
-    </html>
+    <>
+      <Navbar theme={theme} />
+      <div>
+        <section>
+          {children}
+        </section>
+      </div>
+    </>
   );
 }

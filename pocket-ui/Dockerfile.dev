@@ -1,0 +1,25 @@
+# syntax=docker.io/docker/dockerfile:1
+
+FROM node:18-alpine AS base
+
+# Install dependencies and prepare the working directory
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+
+# Copy package manager lockfiles and install dependencies
+COPY package.json package-lock.json* ./
+RUN npm install
+
+# Copy the source code into the container
+COPY . .
+
+# Set the environment to development
+ENV NODE_ENV=development
+ENV HOSTNAME="0.0.0.0"
+ENV PORT=3000
+
+# Expose the development port
+EXPOSE 3000
+
+# Run the development server
+CMD ["npm", "run", "dev"]
