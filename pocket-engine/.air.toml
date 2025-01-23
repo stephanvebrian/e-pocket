@@ -1,0 +1,7 @@
+# Air configuration for live reload
+[build]
+  cmd = "go build -o ./bin/pocket-engine ./cmd"
+  bin = "./bin/pocket-engine"
+  poll = true
+  poll_interval = 1000
+

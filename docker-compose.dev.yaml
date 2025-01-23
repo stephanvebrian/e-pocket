@@ -5,10 +5,18 @@ services:
     build:
       context: ./pocket-engine
       dockerfile: Dockerfile.dev
+    volumes:
+      - ./pocket-engine:/app
+    ports:
+      - "3010:3010"
 
   pocket-ui:
     build:
       context: ./pocket-ui
       dockerfile: Dockerfile.dev
+    volumes:
+      - ./pocket-ui:/app
+    environment:
+      - WATCHPACK_POLLING=true
     ports:
       - "3000:3000"

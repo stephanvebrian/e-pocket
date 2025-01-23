@@ -1,8 +1,9 @@
 import type { Config } from "tailwindcss";
 import daisyui from "daisyui"
 import twTypography from "@tailwindcss/typography"
+const konstaConfig = require('konsta/config')
 
-export default {
+export default konstaConfig({
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -25,4 +26,4 @@ export default {
     logs: true, // Shows info about daisyUI version and used config in the console when building your CSS
     themeRoot: ":root", // The element that receives theme color CSS variables
   },
-} satisfies Config;
+} as Config) satisfies Config;

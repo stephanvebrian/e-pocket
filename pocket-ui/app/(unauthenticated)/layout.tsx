@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import { Navbar } from "./navbar";
 
 export const metadata: Metadata = {
-  title: "aimtrainer | sharpen your aim",
+  title: "e-pocket",
   description: "...",
 };
 
@@ -17,13 +17,8 @@ export default async function UnauthenticatedLayout({
   const theme = cookieStore.get('theme')?.value || "light";
 
   return (
-    <>
-      <Navbar theme={theme} />
-      <div>
-        <section>
-          {children}
-        </section>
-      </div>
-    </>
+    <div>
+      {children}
+    </div>
   );
 }
