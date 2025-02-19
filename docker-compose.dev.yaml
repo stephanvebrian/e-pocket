@@ -5,6 +5,9 @@ services:
     build:
       context: ./pocket-engine
       dockerfile: Dockerfile.dev
+    depends_on:
+      postgres:
+        condition: service_healthy
     volumes:
       - ./pocket-engine:/app
     ports:
@@ -20,3 +23,28 @@ services:
       - WATCHPACK_POLLING=true
     ports:
       - "3000:3000"
+
+  postgres:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: epocket
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: epocket
+    volumes:
+      - ./pocket-db/postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U epocket -d epocket" ]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  migrate:
+    image: migrate/migrate
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./pocket-db/migrations:/migrations
+    command: [ "-path", "/migrations", "-database", "postgres://epocket:secret@postgres:5432/epocket?sslmode=disable", "up" ]
