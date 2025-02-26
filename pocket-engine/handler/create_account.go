@@ -9,12 +9,10 @@ import (
 	handlerModel "github.com/stephanvebrian/e-pocket/pocket-engine/model/handler"
 )
 
-var validate = validator.New()
-
-func (h *handler) CreateTransfer(w http.ResponseWriter, r *http.Request) {
+func (h *handler) CreateAccount(w http.ResponseWriter, r *http.Request) {
 	context := r.Context()
 
-	var req handlerModel.CreateTransferRequest
+	var req handlerModel.CreateAccountRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.writeError(context, model.ErrorResponseOption{
 			Writer:     w,
@@ -51,31 +49,7 @@ func (h *handler) CreateTransfer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, err := h.transferLogic.CreateTransfer(context, req)
-	if errorResp, ok := err.(model.ErrorResponse); err != nil && ok {
-		h.writeError(context, model.ErrorResponseOption{
-			Writer:     w,
-			Request:    r,
-			StatusCode: errorResp.HTTPCode,
-			Response:   errorResp,
-		})
-		return
-	}
-	// unexpected error
-	if err != nil {
-		h.writeError(context, model.ErrorResponseOption{
-			Writer:     w,
-			Request:    r,
-			StatusCode: http.StatusInternalServerError,
-			Response: model.ErrorResponse{
-				Code:    model.UnexpectedError,
-				Message: "Failed to create transfer",
-			},
-		})
-		return
-	}
-
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(response)
+	// json.NewEncoder(w).Encode(response)
 }

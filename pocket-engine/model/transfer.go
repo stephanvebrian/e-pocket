@@ -6,6 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type TransferStatus string
@@ -19,15 +21,15 @@ const (
 )
 
 type Transfer struct {
-	ID              uint64 `gorm:"primarykey"`
+	ID              uuid.UUID `gorm:"type:uuid;default:gen_random_uuid()"`
 	ReferenceID     string
-	TransactionID   string
 	SenderAccount   string
 	Sender          *TransferAccount
 	ReceiverAccount string
 	Receiver        *TransferAccount
 	Amount          uint64
 	Status          TransferStatus
+	UserID          uuid.UUID
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 }

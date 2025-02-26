@@ -3,7 +3,7 @@ package transfer
 import (
 	"context"
 
-	"github.com/stephanvebrian/e-pocket/pocket-engine/model"
+	handlerModel "github.com/stephanvebrian/e-pocket/pocket-engine/model/handler"
 	"gorm.io/gorm"
 )
 
@@ -12,7 +12,7 @@ type transferLogic struct {
 }
 
 type TransferLogic interface {
-	CreateTransfer(ctx context.Context, request model.CreateTransferRequest) (model.CreateTransferResponse, error)
+	CreateTransfer(ctx context.Context, request handlerModel.CreateTransferRequest) (handlerModel.CreateTransferResponse, error)
 }
 
 type TransferLogicOptions struct {

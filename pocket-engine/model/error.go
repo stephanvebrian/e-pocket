@@ -22,6 +22,7 @@ const (
 )
 
 type ErrorResponse struct {
+	HTTPCode  int         `json:"-"`         // HTTP status code
 	Timestamp string      `json:"timestamp"` // Timestamp of the error, will be filled on middleware layer
 	Code      ErrorCode   `json:"code"`      // Unique error code
 	Message   string      `json:"message"`   // Human-readable error message

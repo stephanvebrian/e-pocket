@@ -48,6 +48,9 @@ func (h *handler) RegisterRoutes() {
 	// transfers
 	router.HandleFunc("/v1/transfer", h.CreateTransfer).Methods("POST")
 
+	// accounts
+	router.HandleFunc("/v1/account", h.CreateAccount).Methods("POST")
+
 	router.Use(middleware.EndLoggingMiddleware)
 
 	fmt.Println("Routes registered")
