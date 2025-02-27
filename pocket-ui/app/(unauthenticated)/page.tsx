@@ -1,51 +1,38 @@
 "use client";
 
+import React, { useState } from 'react';
 import {
   Page,
   Navbar,
-  NavbarBackLink,
-  Tabbar,
-  TabbarLink,
-  Block,
-  Icon,
   List,
-  ListItem,
-  Toggle,
+  ListInput,
+  Button,
 } from 'konsta/react';
 
 export default function IndexPage() {
   return (
     <Page>
       <Navbar
-        title="Tabbar"
+        title="e-pocket"
       />
 
-      <Tabbar
-        className="left-0 bottom-0 fixed"
-      >
-        <TabbarLink
-          label={'Tab 1'}
-        />
-        <TabbarLink
-          label={'Tab 2'}
-        />
-        <TabbarLink
-          label={'Tab 3'}
-        />
-      </Tabbar>
+      <div className='max-w-xl mx-auto my-5 px-4'>
+        <h3 className='text-white'>Please login first, before use any feature</h3>
+        <h3 className='text-white'>If you dont have any account, <span className='text-blue-300 hover:underline cursor-pointer'>click this to make one</span></h3>
 
-      <div className='max-w-md mx-auto w-full'>
-        <h2 className='text-white'>Test Page</h2>
+        <List strongIos insetIos>
+          <ListInput label="Username" type="text" placeholder="Username" />
+
+          <ListInput
+            label="Password"
+            type="password"
+            placeholder="Your password"
+          />
+        </List>
+
+        <Button>Login</Button>
       </div>
 
-      <List strong inset>
-        <ListItem
-          title="Tabbar Labels"
-        />
-        <ListItem
-          title="Tabbar Icons"
-        />
-      </List>
     </Page>
   );
 }
