@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { signOut } from "next-auth/react"
 import {
   Page,
   Navbar,
@@ -9,8 +10,9 @@ import {
   TabbarLink,
   Block,
   Icon,
+  Link,
 } from 'konsta/react';
-import { MdLibraryBooks, MdAttachMoney, MdHistory } from 'react-icons/md';
+import { MdLibraryBooks, MdAttachMoney, MdHistory, MdLogout } from 'react-icons/md';
 
 interface ClientSideLayoutProps {
   children: React.ReactNode;
@@ -58,6 +60,15 @@ export default function ClientSideLayout(props: ClientSideLayoutProps) {
     <Page>
       <Navbar
         title="e-pocket"
+        right={
+          <Link navbar iconOnly>
+            <Icon
+              onClick={() => signOut()}
+              ios={<MdLogout className="w-7 h-7" />}
+              material={<MdLogout className="w-6 h-6" />}
+            />
+          </Link>
+        }
       />
 
       <Tabbar
