@@ -8,6 +8,8 @@ import Credentials from 'next-auth/providers/credentials';
 import type { NextAuthOptions } from "next-auth"
 import { getServerSession } from "next-auth"
 
+import * as config from '@/app/config/const'
+
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -65,7 +67,7 @@ export const authOptions: NextAuthOptions = {
       };
     },
   },
-  secret: process.env.AUTH_SECRET,
+  secret: config.AUTH_SECRET,
 }
 
 export const handler = NextAuth(authOptions);

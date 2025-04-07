@@ -7,6 +7,7 @@ CREATE TABLE
   "user" (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid (), -- UUID v4 as the primary key
     username VARCHAR(255) NOT NULL UNIQUE, -- Unique username for the user
+    password VARCHAR(255) NOT NULL, -- Password for the user
     created_at TIMESTAMP NOT NULL DEFAULT NOW (), -- Record creation timestamp
     updated_at TIMESTAMP NOT NULL DEFAULT NOW () -- Last update timestamp
   );

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/stephanvebrian/e-pocket/pocket-engine/logic/account"
 	"github.com/stephanvebrian/e-pocket/pocket-engine/logic/transfer"
 	"github.com/stephanvebrian/e-pocket/pocket-engine/middleware"
 	"github.com/stephanvebrian/e-pocket/pocket-engine/model"
@@ -15,10 +16,12 @@ import (
 type handler struct {
 	router        *mux.Router
 	transferLogic transfer.TransferLogic
+	accountLogic  account.AccountLogic
 }
 
 type HandlerOptions struct {
 	TransferLogic transfer.TransferLogic
+	AccountLogic  account.AccountLogic
 }
 
 type Handler interface {
@@ -29,6 +32,7 @@ type Handler interface {
 func New(opts HandlerOptions) Handler {
 	handler := &handler{
 		transferLogic: opts.TransferLogic,
+		accountLogic:  opts.AccountLogic,
 	}
 
 	return handler
@@ -49,7 +53,7 @@ func (h *handler) RegisterRoutes() {
 	router.HandleFunc("/v1/transfer", h.CreateTransfer).Methods("POST")
 
 	// accounts
-	router.HandleFunc("/v1/account", h.CreateAccount).Methods("POST")
+	router.HandleFunc("/v1/account/generate", h.GenerateAccount).Methods("POST")
 
 	router.Use(middleware.EndLoggingMiddleware)
 
