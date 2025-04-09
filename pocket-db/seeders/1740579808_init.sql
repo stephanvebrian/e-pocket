@@ -1,10 +1,15 @@
 -- Seed the `user` table
 INSERT INTO
-  "user" (username, created_at, updated_at)
+  "user" (username, password, created_at, updated_at)
 VALUES
-  ('john_doe', NOW (), NOW ()),
-  ('jane_smith', NOW (), NOW ()),
-  ('alice_wonderland', NOW (), NOW ());
+  ('john_doe', 'password_john', NOW (), NOW ()),
+  ('jane_smith', 'password_jane', NOW (), NOW ()),
+  (
+    'alice_wonderland',
+    'password_alice',
+    NOW (),
+    NOW ()
+  );
 
 -- Seed the `account` table
 INSERT INTO

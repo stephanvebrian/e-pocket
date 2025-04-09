@@ -23,7 +23,7 @@ services:
       #if you’re not using Windows, you may need comment the next line, set value to true or integer (milliseconds)
       - WATCHPACK_POLLING=1000
       - AUTH_SECRET=WYIB8UBFGJF031XEOQNCF
-      - API_URL=http://localhost:3010
+      - API_URL=http://pocket-engine:3010
     ports:
       - "3000:3000"
 

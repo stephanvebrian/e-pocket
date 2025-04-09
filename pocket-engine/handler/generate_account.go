@@ -13,18 +13,18 @@ func (h *handler) GenerateAccount(w http.ResponseWriter, r *http.Request) {
 	context := r.Context()
 
 	var req handlerModel.GenerateAccountRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		h.writeError(context, model.ErrorResponseOption{
-			Writer:     w,
-			Request:    r,
-			StatusCode: http.StatusBadRequest,
-			Response: model.ErrorResponse{
-				Code:    model.InvalidBody,
-				Message: "Invalid request body",
-			},
-		})
-		return
-	}
+	// if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	// 	h.writeError(context, model.ErrorResponseOption{
+	// 		Writer:     w,
+	// 		Request:    r,
+	// 		StatusCode: http.StatusBadRequest,
+	// 		Response: model.ErrorResponse{
+	// 			Code:    model.InvalidBody,
+	// 			Message: "Invalid request body",
+	// 		},
+	// 	})
+	// 	return
+	// }
 
 	err := validate.Struct(&req)
 	if errorResp, ok := err.(validator.ValidationErrors); ok {

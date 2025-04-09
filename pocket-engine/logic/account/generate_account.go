@@ -4,16 +4,18 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/go-faker/faker/v4"
+	"github.com/go-faker/faker/v4/pkg/options"
 	"github.com/stephanvebrian/e-pocket/pocket-engine/model"
 	handlerModel "github.com/stephanvebrian/e-pocket/pocket-engine/model/handler"
 	"gorm.io/gorm"
 )
 
 func (al *accountLogic) GenerateAccount(ctx context.Context, request handlerModel.GenerateAccountRequest) (handlerModel.GenerateAccountResponse, error) {
-	username := faker.Username()
+	username := strings.ToLower(fmt.Sprintf("%s_%s", faker.FirstName(options.WithRandomStringLength(6)), faker.LastName(options.WithRandomStringLength(5))))
 
 	// validate UserID
 	var user model.User
@@ -38,7 +40,7 @@ func (al *accountLogic) GenerateAccount(ctx context.Context, request handlerMode
 	// create an user
 	user = model.User{
 		Username: username,
-		Password: faker.Password(),
+		Password: faker.Password(options.WithRandomStringLength(10)),
 	}
 
 	createUserResult := al.db.Create(&user)
