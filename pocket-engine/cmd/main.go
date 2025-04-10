@@ -8,6 +8,7 @@ import (
 	"github.com/stephanvebrian/e-pocket/pocket-engine/handler"
 	accountLogicImpl "github.com/stephanvebrian/e-pocket/pocket-engine/logic/account"
 	transferLogicImpl "github.com/stephanvebrian/e-pocket/pocket-engine/logic/transfer"
+	userLogicImpl "github.com/stephanvebrian/e-pocket/pocket-engine/logic/user"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -29,10 +30,14 @@ func main() {
 	accountLogic := accountLogicImpl.New(accountLogicImpl.AccountLogicOptions{
 		DB: dbConn,
 	})
+	userLogic := userLogicImpl.New(userLogicImpl.UserLogicOptions{
+		DB: dbConn,
+	})
 
 	handler := handler.New(handler.HandlerOptions{
 		TransferLogic: transferLogic,
 		AccountLogic:  accountLogic,
+		UserLogic:     userLogic,
 	})
 
 	handler.RegisterRoutes()

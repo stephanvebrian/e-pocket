@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/stephanvebrian/e-pocket/pocket-engine/logic/account"
 	"github.com/stephanvebrian/e-pocket/pocket-engine/logic/transfer"
+	"github.com/stephanvebrian/e-pocket/pocket-engine/logic/user"
 	"github.com/stephanvebrian/e-pocket/pocket-engine/middleware"
 	"github.com/stephanvebrian/e-pocket/pocket-engine/model"
 )
@@ -17,11 +18,13 @@ type handler struct {
 	router        *mux.Router
 	transferLogic transfer.TransferLogic
 	accountLogic  account.AccountLogic
+	userLogic     user.UserLogic
 }
 
 type HandlerOptions struct {
 	TransferLogic transfer.TransferLogic
 	AccountLogic  account.AccountLogic
+	UserLogic     user.UserLogic
 }
 
 type Handler interface {
@@ -33,6 +36,7 @@ func New(opts HandlerOptions) Handler {
 	handler := &handler{
 		transferLogic: opts.TransferLogic,
 		accountLogic:  opts.AccountLogic,
+		userLogic:     opts.UserLogic,
 	}
 
 	return handler
@@ -54,6 +58,9 @@ func (h *handler) RegisterRoutes() {
 
 	// accounts
 	router.HandleFunc("/v1/account/generate", h.GenerateAccount).Methods("POST")
+
+	// users
+	router.HandleFunc("/v1/user/validate", h.ValidateUser).Methods("POST")
 
 	router.Use(middleware.EndLoggingMiddleware)
 

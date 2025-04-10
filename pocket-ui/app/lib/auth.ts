@@ -7,9 +7,10 @@ import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import type { NextAuthOptions } from "next-auth"
 import { getServerSession } from "next-auth"
+import ky from 'ky';
 
 import * as config from '@/app/config/const'
-
+import * as apiConfig from '@/app/config/api';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -31,12 +32,26 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-
-        if (credentials.username === "username" && credentials.password === "password") {
-          return { id: "1", username: "username" };
+        let validateUser: apiConfig.ValidateUserResponse;
+        try {
+          // there is a bug on ky package, hence switch to use native fetch instead
+          // const validateUserRequest = await ky.post(config.ValidateUserURL, { prefixUrl: config.API_URL, json: credentials });
+          // validateUser = await validateUserRequest.json<apiConfig.ValidateUserResponse>();
+          const validateUserRequest = await fetch(`${config.API_URL}/${config.ValidateUserURL}`, {
+            body: JSON.stringify(credentials),
+            method: "POST",
+          })
+          validateUser = await validateUserRequest.json();
+        } catch (error) {
+          console.error(`Error validating user: ${error}`);
+          throw new Error("Error validating user");
         }
 
-        return null;
+        if (validateUser.isValid === false) {
+          throw new Error("Invalid username or password");
+        }
+
+        return { id: validateUser.userID, username: credentials.username };
       },
     }),
   ],

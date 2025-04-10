@@ -7,3 +7,8 @@ export type GenerateAccountResponse = {
   balance: number;
   status: string;
 }
+
+export type ValidateUserResponse = {
+  isValid: boolean;
+  userID: string;
+}
