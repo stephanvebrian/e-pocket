@@ -39,7 +39,7 @@ export default function WalletPage() {
               <ListItem
                 link
                 media={<Icon material={<MdAccountBalanceWallet />} className="text-5xl" />}
-                header={account.accountName}
+                header={`${account.accountName} - ${account.accountNumber}`}
                 title={`Rp ${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2, }).format(account.balance / 100)}`}
               // footer={"Tabungan"}
               />
