@@ -11,6 +11,7 @@ const (
 	// common error code
 	ValidationError   ErrorCode = "VALIDATION_ERROR"
 	InvalidBody       ErrorCode = "INVALID_BODY"
+	InvalidParameter  ErrorCode = "INVALID_PARAMETER"
 	UnexpectedError   ErrorCode = "UNEXPECTED_ERROR"
 	DatabaseError     ErrorCode = "DATABASE_ERROR"
 	DataNotFoundError ErrorCode = "NOT_FOUND_ERROR"

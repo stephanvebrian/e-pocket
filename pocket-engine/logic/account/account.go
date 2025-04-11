@@ -13,6 +13,7 @@ type accountLogic struct {
 
 type AccountLogic interface {
 	GenerateAccount(ctx context.Context, request handlerModel.GenerateAccountRequest) (handlerModel.GenerateAccountResponse, error)
+	ListAccount(ctx context.Context, request handlerModel.ListAccountRequest) (handlerModel.ListAccountResponse, error)
 }
 
 type AccountLogicOptions struct {
