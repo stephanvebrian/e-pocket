@@ -37,7 +37,7 @@ export const authOptions: NextAuthOptions = {
           // there is a bug on ky package, hence switch to use native fetch instead
           // const validateUserRequest = await ky.post(config.ValidateUserURL, { prefixUrl: config.API_URL, json: credentials });
           // validateUser = await validateUserRequest.json<apiConfig.ValidateUserResponse>();
-          const validateUserRequest = await fetch(`${config.API_URL}/${config.ValidateUserURL}`, {
+          const validateUserRequest = await fetch(`${config.API_URL}${config.ValidateUserURL}`, {
             body: JSON.stringify(credentials),
             method: "POST",
           })

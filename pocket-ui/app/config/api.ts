@@ -23,3 +23,8 @@ export type AccountData = {
   balance: number;
   status: string;
 }
+
+export type InquiryAccountResponse = {
+  accountNumber: string;
+  accountName: string;
+}

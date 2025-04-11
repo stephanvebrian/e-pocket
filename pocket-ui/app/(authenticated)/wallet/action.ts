@@ -17,7 +17,7 @@ export async function getAccounts(): Promise<GetAccounts> {
 
   let accountsResponse: apiConfig.ListAccountResponse;
   try {
-    const request = await fetch(`${config.API_URL}/${config.ListAccountURL}?userID=${session.user.id}`, {
+    const request = await fetch(`${config.API_URL}${config.ListAccountURL}?userID=${session.user.id}`, {
       method: "GET",
     });
 
