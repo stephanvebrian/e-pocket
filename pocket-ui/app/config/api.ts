@@ -28,3 +28,21 @@ export type InquiryAccountResponse = {
   accountNumber: string;
   accountName: string;
 }
+
+export type CreateTransferRequest = {
+  idempotencyKey: string;
+  sender: CreateTransferAccount;
+  receiver: CreateTransferAccount;
+  amount: number;
+  userID: string;
+}
+
+export type CreateTransferAccount = {
+  number: string;
+}
+
+export type CreateTransferResponse = {
+  idempotencyKey: string;
+  transactionID: string;
+  status: string;
+}

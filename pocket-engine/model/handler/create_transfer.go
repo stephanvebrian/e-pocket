@@ -10,7 +10,6 @@ type CreateTransferRequest struct {
 
 type TransferAccountRequest struct {
 	Number string `json:"number" validate:"required"`
-	Name   string `json:"name" validate:"required"`
 }
 
 type CreateTransferResponse struct {

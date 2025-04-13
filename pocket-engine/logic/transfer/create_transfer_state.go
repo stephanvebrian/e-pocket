@@ -79,11 +79,11 @@ func (tl *transferLogic) handleCreateState(ctx context.Context, args statemachin
 		ReferenceID:   transition.Request.IdempotencyKey,
 		SenderAccount: transition.Request.Sender.Number,
 		Sender: &model.TransferAccount{
-			Name: transition.Request.Sender.Name,
+			Name: "",
 		},
 		ReceiverAccount: transition.Request.Receiver.Number,
 		Receiver: &model.TransferAccount{
-			Name: transition.Request.Receiver.Name,
+			Name: "",
 		},
 		Amount: transition.Request.Amount,
 		Status: model.TransferStatusProcessing,
@@ -191,5 +191,6 @@ func (tl *transferLogic) handleCompleteState(ctx context.Context, args statemach
 	}
 
 	transition.Transfer = updatedTransfer
+	// TODO: fill transaction history
 	return transition, nil
 }

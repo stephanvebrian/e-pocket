@@ -49,3 +49,53 @@ export async function inquiry(accountNumber: string): Promise<InquiryAccount> {
     data: inquiryResponse,
   }
 }
+
+export interface TransferRequest {
+  idempotencyKey: string;
+  senderAccountNumber: string;
+  receiverAccountNumber: string;
+  amount: number;
+}
+
+export interface TransferResponse {
+  success: boolean;
+  data?: apiConfig.CreateTransferResponse;
+}
+
+export async function transfer(request: TransferRequest): Promise<TransferResponse> {
+  const session = await auth();
+  if (session === null) {
+    return { success: false }
+  }
+
+  let transferRequest: apiConfig.CreateTransferRequest = {
+    idempotencyKey: request.idempotencyKey,
+    sender: {
+      number: request.senderAccountNumber,
+    },
+    receiver: {
+      number: request.receiverAccountNumber,
+    },
+    amount: request.amount,
+    userID: session.user.id,
+  }
+  let transferResponse: apiConfig.CreateTransferResponse;
+  try {
+    const request = await fetch(`${config.API_URL}${config.CreateTransferURL}`, {
+      method: "POST",
+      body: JSON.stringify(transferRequest),
+    })
+
+    transferResponse = await request.json();
+  } catch (error) {
+    console.error(`Error creating transfer: ${error}`);
+    return {
+      success: false,
+    }
+  }
+
+  return {
+    success: true,
+    data: transferResponse,
+  }
+}

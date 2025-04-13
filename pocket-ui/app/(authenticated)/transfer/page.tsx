@@ -1,26 +1,32 @@
 'use client'
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation'
 import {
   Block,
   Card,
   List,
-  ListInput
+  ListInput,
+  Button
 } from 'konsta/react';
 import { MdAccountBalanceWallet, MdSavings, MdPerson } from 'react-icons/md';
+import { v6 as uuidv6 } from 'uuid';
 
 import * as apiConfig from '@/app/config/api';
 import { getAccounts } from '@/app/(authenticated)/wallet/action';
-import { inquiry } from '@/app/(authenticated)/transfer/action';
-import { resolve } from 'path';
+import { inquiry, transfer } from '@/app/(authenticated)/transfer/action';
 
 export default function TransferPage() {
+  const router = useRouter()
+
   const [accounts, setAccounts] = useState<apiConfig.AccountData[]>([]);
 
-  const [sourceNumber, setSourceNumber] = useState<string>('')
+  const [idempotencyKey, setIdempotencyKey] = useState<string>(uuidv6());
+  const [sourceAccount, setSourceAccount] = useState<apiConfig.AccountData>()
   const [destinationNumber, setDestinationNumber] = useState<string>('')
   const [destinationAccount, setDestinationAccount] = useState<apiConfig.InquiryAccountResponse>()
   const [amount, setAmount] = useState<number>(0)
+  const [enableTransfer, setEnableTransfer] = useState<boolean>(false)
 
   const fetchAccounts = async () => {
     const { success, data } = await getAccounts();
@@ -31,7 +37,7 @@ export default function TransferPage() {
 
     setAccounts(data.accounts);
     if (data.accounts.length > 0) {
-      setSourceNumber(data.accounts[0].accountNumber);
+      setSourceAccount(data.accounts[0]);
     }
   }
 
@@ -50,6 +56,36 @@ export default function TransferPage() {
     setDestinationAccount(data);
   }
 
+  const handleTransfer = async () => {
+    if (sourceAccount === undefined) {
+      alert("Please select source account");
+      return;
+    }
+
+    if (destinationAccount === undefined) {
+      alert("Please select destination account");
+      return;
+    }
+
+    setEnableTransfer(false)
+
+    const response = await transfer({
+      idempotencyKey: idempotencyKey,
+      senderAccountNumber: sourceAccount.accountNumber,
+      receiverAccountNumber: destinationAccount.accountNumber,
+      amount: amount * 100,
+    })
+
+    if (!response.success || response.data === undefined) {
+      alert("Transfer failed");
+      return;
+    }
+
+    // redirect to history page
+    // router.push('/history')
+    alert("Transfer successful");
+  }
+
   useEffect(() => {
     fetchAccounts();
   }, [])
@@ -65,6 +101,31 @@ export default function TransferPage() {
     return () => clearTimeout(handler); // clear previous timeout if input changes
   }, [destinationNumber]);
 
+  useEffect(() => {
+    if (sourceAccount === undefined) {
+      setEnableTransfer(false);
+      return;
+    }
+    if (destinationNumber == '') {
+      setEnableTransfer(false);
+      return;
+    }
+    if (destinationAccount === undefined) {
+      setEnableTransfer(false);
+      return;
+    }
+    if (amount <= 0) {
+      setEnableTransfer(false);
+      return;
+    }
+    if (amount > sourceAccount.balance / 100) {
+      setEnableTransfer(false);
+      return;
+    }
+
+    setEnableTransfer(true);
+  }, [sourceAccount, destinationNumber, destinationAccount, amount])
+
   return (
     <>
       <Block strong className="space-y-4">
@@ -76,13 +137,14 @@ export default function TransferPage() {
           type="select"
           dropdown
           onChange={(e) => {
-            setSourceNumber(e.target.value)
+            setSourceAccount(accounts.find((account) => account.accountNumber === e.target.value))
           }}
-          value={sourceNumber}
+          value={sourceAccount?.accountNumber || ''}
         >
           {accounts.map((account) => {
+            const balanceStr = `Rp ${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2, }).format(account.balance / 100)}`
             return (
-              <option key={account.accountNumber} value={account.accountNumber}>{account.accountName} - {account.accountNumber}</option>
+              <option key={account.accountNumber} value={account.accountNumber}>{account.accountName} - {account.accountNumber} - {balanceStr}</option>
             )
           })}
         </ListInput>
@@ -95,9 +157,10 @@ export default function TransferPage() {
           </Card>
         )}
 
-        <ListInput label="Amount" type="number" placeholder="Amount" onChange={(e) => { setAmount(e.target.valueAsNumber) }} value={amount} />
-
+        <ListInput label="Amount" type="number" placeholder="Amount" onChange={(e) => { setAmount(e.target.valueAsNumber) }} value={amount || 0} />
       </List>
+
+      <Button disabled={!enableTransfer} onClick={handleTransfer}>Transfer</Button>
     </>
   );
 }
