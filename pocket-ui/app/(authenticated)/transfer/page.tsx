@@ -21,7 +21,6 @@ export default function TransferPage() {
 
   const [accounts, setAccounts] = useState<apiConfig.AccountData[]>([]);
 
-  const [idempotencyKey, setIdempotencyKey] = useState<string>(uuidv6());
   const [sourceAccount, setSourceAccount] = useState<apiConfig.AccountData>()
   const [destinationNumber, setDestinationNumber] = useState<string>('')
   const [destinationAccount, setDestinationAccount] = useState<apiConfig.InquiryAccountResponse>()
@@ -70,7 +69,7 @@ export default function TransferPage() {
     setEnableTransfer(false)
 
     const response = await transfer({
-      idempotencyKey: idempotencyKey,
+      idempotencyKey: uuidv6(),
       senderAccountNumber: sourceAccount.accountNumber,
       receiverAccountNumber: destinationAccount.accountNumber,
       amount: amount * 100,
@@ -82,8 +81,7 @@ export default function TransferPage() {
     }
 
     // redirect to history page
-    // router.push('/history')
-    alert("Transfer successful");
+    router.push('/history')
   }
 
   useEffect(() => {

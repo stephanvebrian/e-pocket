@@ -2,8 +2,10 @@ package transfer
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/stephanvebrian/e-pocket/pocket-engine/logic/statemachine"
 	"github.com/stephanvebrian/e-pocket/pocket-engine/model"
 	handlerModel "github.com/stephanvebrian/e-pocket/pocket-engine/model/handler"
@@ -43,8 +45,9 @@ func (tl *transferLogic) handleInitState(ctx context.Context, args statemachine.
 
 	// Check if transfer already exists
 	var transfer model.Transfer
-	result := tl.db.First(&transfer).Where("reference_id = ?", transition.Request.IdempotencyKey)
+	result := tl.db.First(&transfer, "reference_id = ?", transition.Request.IdempotencyKey)
 	if result.Error != nil && result.Error != gorm.ErrRecordNotFound {
+		fmt.Println("Error when querying transfer:", result.Error)
 		return nil, model.ErrorResponse{
 			HTTPCode: http.StatusInternalServerError,
 			Code:     model.DatabaseError,
@@ -74,6 +77,8 @@ func (tl *transferLogic) handleInitState(ctx context.Context, args statemachine.
 func (tl *transferLogic) handleCreateState(ctx context.Context, args statemachine.StateTransition) (statemachine.StateTransition, error) {
 	transition := args.(*TransferStateTransition)
 
+	userID, _ := uuid.Parse(transition.Request.UserID)
+
 	// Create the transfer record
 	transfer := model.Transfer{
 		ReferenceID:   transition.Request.IdempotencyKey,
@@ -87,6 +92,7 @@ func (tl *transferLogic) handleCreateState(ctx context.Context, args statemachin
 		},
 		Amount: transition.Request.Amount,
 		Status: model.TransferStatusProcessing,
+		UserID: userID,
 	}
 
 	if err := tl.db.Create(&transfer).Error; err != nil {
@@ -182,11 +188,12 @@ func (tl *transferLogic) handleCompleteState(ctx context.Context, args statemach
 
 	// Retrieve the updated transfer
 	var updatedTransfer model.Transfer
-	if err := tl.db.First(&updatedTransfer, "reference_id = ?", transition.Request.IdempotencyKey).Error; err != nil {
+	if err := tl.db.First(&updatedTransfer, "reference_id = ?", transition.Request.IdempotencyKey).Error; err != nil && err != gorm.ErrRecordNotFound {
 		return nil, model.ErrorResponse{
 			HTTPCode: http.StatusInternalServerError,
 			Code:     model.DatabaseError,
 			Message:  "Error when querying transfer",
+			Details:  err,
 		}
 	}
 
