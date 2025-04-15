@@ -50,7 +50,7 @@ CREATE TABLE
     id UUID PRIMARY KEY DEFAULT gen_random_uuid (), -- UUID v4 as the primary key
     user_id UUID NOT NULL REFERENCES "user" (id), -- Foreign key reference to the user table
     account_id BIGINT NOT NULL REFERENCES account (id), -- Foreign key reference to the account table
-    transaction_type VARCHAR(50) NOT NULL, -- Type of transaction (e.g., INTRABANK, PAYMENT)
+    transaction_type VARCHAR(50) NOT NULL, -- Type of transaction (e.g., INCOMING, OUTGOING)
     transaction_amount BIGINT NOT NULL DEFAULT 0, -- Transaction amount
     ending_balance BIGINT NOT NULL DEFAULT 0, -- Ending balance after the transaction
     status VARCHAR(20) NOT NULL DEFAULT 'PROCESSING', -- Transaction status (e.g., SUCCESS, PROCESSING, FAILED)

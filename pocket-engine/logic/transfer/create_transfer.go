@@ -17,6 +17,7 @@ func (tl *transferLogic) CreateTransfer(ctx context.Context, request handlerMode
 	sm.RegisterState(statemachine.State(StateDeduct), tl.handleDeductState)
 	sm.RegisterState(statemachine.State(StateAdd), tl.handleAddState)
 	sm.RegisterState(statemachine.State(StateUpdateStatus), tl.handleUpdateStatusState)
+	sm.RegisterState(statemachine.State(StateTransactionHistory), tl.handleTransactionHistoryState)
 	sm.RegisterState(statemachine.State(StateComplete), tl.handleCompleteState)
 
 	// Initialize the state transition

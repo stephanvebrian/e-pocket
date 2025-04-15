@@ -15,13 +15,14 @@ import (
 type TransferState = statemachine.State
 
 const (
-	StateInit         TransferState = "INIT"
-	StateCreate       TransferState = "CREATE"
-	StateDeduct       TransferState = "DEDUCT"
-	StateAdd          TransferState = "ADD"
-	StateUpdateStatus TransferState = "UPDATE_STATUS"
-	StateComplete     TransferState = "COMPLETE"
-	StateFailed       TransferState = "FAILED"
+	StateInit               TransferState = "INIT"
+	StateCreate             TransferState = "CREATE"
+	StateDeduct             TransferState = "DEDUCT"
+	StateAdd                TransferState = "ADD"
+	StateUpdateStatus       TransferState = "UPDATE_STATUS"
+	StateTransactionHistory TransferState = "TRANSACTION_HISTORY"
+	StateComplete           TransferState = "COMPLETE"
+	StateFailed             TransferState = "FAILED"
 )
 
 type TransferStateTransition struct {
@@ -146,6 +147,7 @@ func (tl *transferLogic) handleDeductState(ctx context.Context, args statemachin
 		}
 	}
 
+	tl.db.First(&senderAccount, "id = ?", senderAccount.ID)
 	transition.SenderAccount = senderAccount
 	transition.SetState(StateAdd)
 	return transition, nil
@@ -178,6 +180,39 @@ func (tl *transferLogic) handleUpdateStatusState(ctx context.Context, args state
 			Message:  "Error when updating transfer status",
 		}
 	}
+
+	var receiverAccount model.Account
+	tl.db.First(&receiverAccount, "account_number = ?", transition.Request.Receiver.Number)
+	transition.ReceiverAccount = receiverAccount
+
+	transition.SetState(StateTransactionHistory)
+	return transition, nil
+}
+
+func (tl *transferLogic) handleTransactionHistoryState(ctx context.Context, args statemachine.StateTransition) (statemachine.StateTransition, error) {
+	transition := args.(*TransferStateTransition)
+
+	// add transaction history for sender as outgoing
+	senderHistory := model.TransactionHistory{
+		UserID:            transition.SenderAccount.UserID,
+		AccountID:         transition.SenderAccount.ID,
+		TransactionType:   model.TransactionHistoryTypeOutgoing,
+		TransactionAmount: transition.Transfer.Amount,
+		EndingBalance:     transition.SenderAccount.Balance,
+		Status:            model.TransactionHistoryStatusCompleted,
+	}
+	tl.db.Create(&senderHistory)
+
+	// add transaction history for receiver as incoming
+	receiverHistory := model.TransactionHistory{
+		UserID:            transition.ReceiverAccount.UserID,
+		AccountID:         transition.ReceiverAccount.ID,
+		TransactionType:   model.TransactionHistoryTypeIncoming,
+		TransactionAmount: transition.Transfer.Amount,
+		EndingBalance:     transition.ReceiverAccount.Balance,
+		Status:            model.TransactionHistoryStatusCompleted,
+	}
+	tl.db.Create(&receiverHistory)
 
 	transition.SetState(StateComplete)
 	return transition, nil
