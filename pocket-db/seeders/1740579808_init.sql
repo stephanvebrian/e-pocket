@@ -194,9 +194,9 @@ VALUES
         AND pocket_number = 1
     ),
     'OUTGOING',
-    -1000000,
+    1000000,
     1100000,
-    'SUCCESS',
+    'COMPLETED',
     NOW (),
     NOW ()
   ),
@@ -230,7 +230,7 @@ VALUES
     'INCOMING',
     1000000,
     50000,
-    'SUCCESS',
+    'COMPLETED',
     NOW (),
     NOW ()
   );

@@ -46,3 +46,18 @@ export type CreateTransferResponse = {
   transactionID: string;
   status: string;
 }
+export type TransactionHistoryResponse = {
+  transactionHistory: TransactionData[];
+}
+
+export type TransactionData = {
+  id: string;
+  userID: string;
+  account: AccountData;
+  transactionType: string;
+  amount: number;
+  endingBalance: number;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+}

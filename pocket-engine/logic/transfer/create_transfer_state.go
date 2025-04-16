@@ -233,6 +233,5 @@ func (tl *transferLogic) handleCompleteState(ctx context.Context, args statemach
 	}
 
 	transition.Transfer = updatedTransfer
-	// TODO: fill transaction history
 	return transition, nil
 }

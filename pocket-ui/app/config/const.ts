@@ -9,3 +9,5 @@ export const InquiryURL: string = "/v1/account/inquiry";
 export const ValidateUserURL: string = "/v1/user/validate";
 
 export const CreateTransferURL: string = "/v1/transfer";
+
+export const ListTransactionHistoryURL: string = "/v1/transaction/history";

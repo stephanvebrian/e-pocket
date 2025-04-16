@@ -8,6 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/stephanvebrian/e-pocket/pocket-engine/logic/account"
+	"github.com/stephanvebrian/e-pocket/pocket-engine/logic/transactionhistory"
 	"github.com/stephanvebrian/e-pocket/pocket-engine/logic/transfer"
 	"github.com/stephanvebrian/e-pocket/pocket-engine/logic/user"
 	"github.com/stephanvebrian/e-pocket/pocket-engine/middleware"
@@ -15,16 +16,18 @@ import (
 )
 
 type handler struct {
-	router        *mux.Router
-	transferLogic transfer.TransferLogic
-	accountLogic  account.AccountLogic
-	userLogic     user.UserLogic
+	router                  *mux.Router
+	transferLogic           transfer.TransferLogic
+	accountLogic            account.AccountLogic
+	userLogic               user.UserLogic
+	transactionHistoryLogic transactionhistory.TransactionHistoryLogic
 }
 
 type HandlerOptions struct {
-	TransferLogic transfer.TransferLogic
-	AccountLogic  account.AccountLogic
-	UserLogic     user.UserLogic
+	TransferLogic           transfer.TransferLogic
+	AccountLogic            account.AccountLogic
+	UserLogic               user.UserLogic
+	TransactionHistoryLogic transactionhistory.TransactionHistoryLogic
 }
 
 type Handler interface {
@@ -34,9 +37,10 @@ type Handler interface {
 
 func New(opts HandlerOptions) Handler {
 	handler := &handler{
-		transferLogic: opts.TransferLogic,
-		accountLogic:  opts.AccountLogic,
-		userLogic:     opts.UserLogic,
+		transferLogic:           opts.TransferLogic,
+		accountLogic:            opts.AccountLogic,
+		userLogic:               opts.UserLogic,
+		transactionHistoryLogic: opts.TransactionHistoryLogic,
 	}
 
 	return handler
@@ -63,6 +67,9 @@ func (h *handler) RegisterRoutes() {
 
 	// users
 	router.HandleFunc("/v1/user/validate", h.ValidateUser).Methods("POST")
+
+	// transaction history
+	router.HandleFunc("/v1/transaction/history", h.ListTransactionHistory).Methods("GET")
 
 	router.Use(middleware.EndLoggingMiddleware)
 
