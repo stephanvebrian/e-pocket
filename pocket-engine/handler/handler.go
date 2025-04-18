@@ -64,6 +64,7 @@ func (h *handler) RegisterRoutes() {
 	router.HandleFunc("/v1/account/generate", h.GenerateAccount).Methods("POST")
 	router.HandleFunc("/v1/account", h.ListAccount).Methods("GET")
 	router.HandleFunc("/v1/account/inquiry", h.InquiryAccount).Methods("GET")
+	router.HandleFunc("/v1/account/random", h.RandomAccount).Methods("GET")
 
 	// users
 	router.HandleFunc("/v1/user/validate", h.ValidateUser).Methods("POST")
