@@ -14,7 +14,7 @@ import { v6 as uuidv6 } from 'uuid';
 
 import * as apiConfig from '@/app/config/api';
 import { getAccounts } from '@/app/(authenticated)/wallet/action';
-import { inquiry, transfer } from '@/app/(authenticated)/transfer/action';
+import { inquiry, transfer, randomAccount } from '@/app/(authenticated)/transfer/action';
 
 export default function TransferPage() {
   const router = useRouter()
@@ -53,6 +53,21 @@ export default function TransferPage() {
     }
 
     setDestinationAccount(data);
+  }
+
+  const handleRandomAccount = async () => {
+    const { success, data } = await randomAccount();
+    if (!success) {
+      alert("failed to generate random account");
+      return
+    }
+
+    if (!data) {
+      alert("failed to generate random account");
+      return
+    }
+
+    setDestinationNumber(data.account.accountNumber);
   }
 
   const handleTransfer = async () => {
@@ -147,7 +162,14 @@ export default function TransferPage() {
           })}
         </ListInput>
 
-        <ListInput label="Destination" type="text" placeholder="Destination Number" onChange={(e) => { setDestinationNumber(e.target.value) }} value={destinationNumber} />
+        <div className='flex w-full'>
+          <div className='w-4/5'>
+            <ListInput label="Destination" type="text" placeholder="Destination Number" onChange={(e) => { setDestinationNumber(e.target.value) }} value={destinationNumber} />
+          </div>
+          <div className='flex items-center justify-center'>
+            <Button onClick={handleRandomAccount}>Randomize</Button>
+          </div>
+        </div>
         {destinationAccount && (
           <Card>
             <p>Destination Account:</p>

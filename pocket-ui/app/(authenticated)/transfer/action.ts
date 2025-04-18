@@ -99,3 +99,34 @@ export async function transfer(request: TransferRequest): Promise<TransferRespon
     data: transferResponse,
   }
 }
+
+export interface RandomAccount {
+  success: boolean;
+  data?: apiConfig.RandomAccountResponse;
+}
+
+export async function randomAccount(): Promise<RandomAccount> {
+  const session = await auth();
+  if (session === null) {
+    return { success: false }
+  }
+
+  let randomAccountResponse: apiConfig.RandomAccountResponse;
+  try {
+    const request = await fetch(`${config.API_URL}${config.GetRandomAccountURL}?userID=${session.user.id}`, {
+      method: "GET",
+    });
+
+    randomAccountResponse = await request.json();
+  } catch (error) {
+    console.error(`Error getting random account: ${error}`);
+    return {
+      success: false,
+    }
+  }
+
+  return {
+    success: true,
+    data: randomAccountResponse,
+  }
+}

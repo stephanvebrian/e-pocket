@@ -61,3 +61,7 @@ export type TransactionData = {
   createdAt: string;
   updatedAt: string;
 }
+
+export type RandomAccountResponse = {
+  account: AccountData;
+}
